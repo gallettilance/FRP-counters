@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<!--
+<link href="https://gitcdn.github.io/bootstrap-toggle/2.2.2/css/bootstrap-toggle.min.css" rel="stylesheet">
+-->
+<title> FRP for statistics </title>
+<style>
+button:focus{
+  outline:none !important;
+}
+</style>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+</script>
+<script
+src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js">
+</script>
+<script
+src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js">
+</script>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/bacon.js/0.7.53/Bacon.min.js">
+</script>
+
+<div class="container-fluid">
+
+<hr size="3">
+
+<div class="container" style="text-align:center">
+  <h2> Simple FRP counter </h2>
+</div>
+  
+<div class="row">
+<div class="col-md-12">
+<center>
+<p id="theCounts1" class="h1">00</p>
+</center>
+</div>
+</div><!--class-row-->
+
+<hr size="2">
+
+<div class="row">
+<div class="col-md-4">
+<center>
+<button
+ id="up"
+ type="button"
+ class="btn btn-default btn-lg"
+>UP</button>
+</center>
+</div>
+<div class="col-md-4">
+<center>
+<button
+id="down" 
+type="button" class="btn btn-default btn-lg"
+ >Down</button>
+</center>
+</div>
+<div class="col-md-4">
+<center>
+<button
+ id="reset"
+ type="button"
+ class="btn btn-default btn-lg"
+>Reset</button>
+</center>
+</div>
+</div><!--class-row-->
+
+<hr size="3">
+
+<br>
+<br>
+<br>
+
+
+<div class="container" style="text-align:center">
+  <h2> FRP factorial counter </h2>
+</div>
+  
+<div class="row">
+<div class="col-md-12">
+<center>
+<p id="theCounts2" class="h1">00</p>
+</center>
+</div>
+</div><!--class-row-->
+
+<hr size="2">
+
+<div class="row">
+<div class="col-md-4">
+<center>
+<button
+ id="factNext"
+ type="button"
+ class="btn btn-default btn-lg"
+>Next Fact</button>
+</center>
+</div>
+<div class="col-md-4">
+<center>
+<button
+ id="factPrev"
+ type="button"
+ class="btn btn-default btn-lg"
+>Prev Fact</button>
+</center>
+</div>
+<div class="col-md-4">
+<center>
+<button
+ id="resetFact"
+ type="button"
+ class="btn btn-default btn-lg"
+>Reset</button>
+</center>
+</div>
+</div><!--class-row-->
+
+<hr size="3">
+
+<br>
+<br>
+<br>
+
+<div class="container" style="text-align:center">
+  <h2> FRP fibonnacci counter </h2>
+</div>
+
+<div class="row">
+<div class="col-md-12">
+<center>
+<p id="theCounts3" class="h1">00</p>
+</center>
+</div>
+</div><!--class-row-->
+
+<hr size="2">
+
+<div class="row">
+<div class="col-md-4">
+<center>
+<button
+ id="fibNext"
+ type="button"
+ class="btn btn-default btn-lg"
+>Next Fib</button>
+</center>
+</div>
+<div class="col-md-4">
+<center>
+<button
+ id="fibPrev"
+ type="button"
+ class="btn btn-default btn-lg"
+>Prev Fib</button>
+</center>
+</div>
+<div class="col-md-4">
+<center>
+<button
+ id="resetFib"
+ type="button"
+ class="btn btn-default btn-lg"
+>Reset</button>
+</center>
+</div>
+</div><!--class-row-->
+
+<hr size="2">
+
+
+
+</div>
+
+
+<script
+ src="./JS/theCounter_bacon.js">
+</script>
+
+
+</body>
+</html>
+
