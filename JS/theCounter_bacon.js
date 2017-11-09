@@ -31,8 +31,7 @@ theCounts3.assign($('#theCounts3'), 'text');
 
 // some options for the folding function
 function divide(x, y) {
-    res = x/y
-    return res.toFixed(5)
+    return x/y
 }
 
 function diff(x, y) {
@@ -51,17 +50,17 @@ var foldNext = $('#foldNext').asEventStream('click');
 var foldPrev = $('#foldPrev').asEventStream('click');
 var reset = $('#resetFold').asEventStream('click');
 
-var incr = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[1], x[1] + y]}});
+var s = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[1], x[1] + y]}});
 
 // higher order function - takes an initial value, a function (and its inverse) and applies a foldleft on the integer stream
-function myfunc(init, f, inv) {
-    return incr.scan(init, function(x, y) {if ( y[0] === 0 ) {return init} else {if (y[0] >= y[1]) {return inv(x, y[1])} else {return f(x, y[0])}}})
+function myfunc(st, init, f, inv) {
+    return st.scan(init, function(x, y) {if ( y[0] === 0 ) {return init} else {if (y[0] >= y[1]) {return inv(x, y[1])} else {return f(x, y[0])}}})
 }
 
-var theCounts_sum = myfunc(0, sum, diff);
-var theCounts_mult = myfunc(1, mult, divide);
-var theCounts_div = myfunc(1, divide, mult);
-var theCounts_diff = myfunc(0, diff, sum);
+var theCounts_sum = myfunc(s, 0, sum, diff);
+var theCounts_mult = myfunc(s, 1, mult, divide);
+var theCounts_div = myfunc(s, 1, divide, mult);
+var theCounts_diff = myfunc(s, 0, diff, sum);
     
 theCounts_sum.assign($('#theCounts_sum'), 'text');
 theCounts_mult.assign($('#theCounts_mult'), 'text');
@@ -92,38 +91,40 @@ var theCounts6 = sqNext.map(1).merge(reset.map(0)).merge(sqPrev.map(-1)).scan(0,
 
 theCounts6.assign($('#theCounts6'), 'text');
 
-/*
+
 // foldleft2 counter
 var foldNext = $('#fold2Next').asEventStream('click');
 var foldPrev = $('#fold2Prev').asEventStream('click');
 var reset = $('#resetFold2').asEventStream('click');
 
-var s1 = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[0]+y, x[1] + y]}});
-var s2 = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[0]+y, x[1] + y]}});
+var s1 = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[1], x[1] + y]}});
+var s2 = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[1], x[1] + y]}});
 
 // higher order function - takes an initial value, a function (and its inverse) and applies a foldleft on a combination of the 2 integer streams
-function myfunc(st1, st2, init, f, inv) {
-    return st1.combine(st2, function (x, y) {return [x, y]}).scan(init, function(x, y) {if ( y === 0 ) {return init} else {return y}})
+function myfunc2(st1, st2, init, f, inv) {
+    return st1.combine(st2, function (x, y) {return [x, y]}).scan(init, function(x, y) {if ( y[0][0] === 0 ) {return init} else {if (y[0][0] >= y[0][1]) {return inv(x, y[0][0], y[1][0])} else {return f(x, y[0][1], y[1][1])}}})
 }
 
-var theCounts2_sum = myfunc(s1, s2, 0, sum, diff);
-var theCounts2_mult = myfunc(s1, s2, 1, mult, divide);
-var theCounts2_div = myfunc(s1, s2, 1, divide, mult);
-var theCounts2_diff = myfunc(s1, s2, 0, diff, sum);
+function sumSq(x, y, z) {
+    return x + y*z
+}
+
+function sumSqInv(x, y, z) {
+    return x - y*z
+}
+
+function sumInvSq(x, y, z) {
+    return x + 1/(y*z)
+}
+
+function sumInvSqInv(x, y, z) {
+    return x - 1/(y*z)
+}
+
+var theCounts_sumSq = myfunc2(s1, s2, 0, sumSq, sumSqInv);
+var theCounts_sumInvSq = myfunc2(s1, s2, 1, sumInvSq, sumInvSqInv);
     
-theCounts2_sum.assign($('#theCounts2_sum'), 'text');
-theCounts2_mult.assign($('#theCounts2_mult'), 'text');
-theCounts2_div.assign($('#theCounts2_div'), 'text');
-theCounts2_diff.assign($('#theCounts2_diff'), 'text');
+theCounts_sumSq.assign($('#theCounts_sumSq'), 'text');
+theCounts_sumInvSq.assign($('#theCounts_sumInvSq'), 'text');
 
-*/
-
-// rolling variance on integers
-var rollNext = $('#rollNext_v').asEventStream('click');
-var rollPrev = $('#rollPrev_v').asEventStream('click');
-var reset = $('#resetRoll_v').asEventStream('click');
-
-var theCounts7 = rollNext.map(1).merge(reset.map(0)).merge(rollPrev.map(-1)).scan([0, 1, 0], function(x,y) {if (y === 0) {return [0, 1, 0]} else {if (y < 0) {return [x[0]+y, x[1]+y, diff(x[2], x[0])]} else {return [x[0] + y, x[1] + y, sum(x[2], x[1])]}}}).scan(0, function(x, y) {return y[2]/y[1]});;
-
-theCounts7.assign($('#theCounts7'), 'text');
 
