@@ -68,11 +68,36 @@ theCounts_div.assign($('#theCounts_div'), 'text');
 theCounts_diff.assign($('#theCounts_diff'), 'text');
 
 
-// rolling mean of integers
-var rollNext = $('#rollNext').asEventStream('click');
-var rollPrev = $('#rollPrev').asEventStream('click');
-var reset = $('#resetRoll').asEventStream('click');
+// rolling mean on integers
+var rollNext = $('#rollNext_m').asEventStream('click');
+var rollPrev = $('#rollPrev_m').asEventStream('click');
+var reset = $('#resetRoll_m').asEventStream('click');
 
 var theCounts5 = rollNext.map(1).merge(reset.map(0)).merge(rollPrev.map(-1)).scan([0, 1, 0], function(x,y) {if (y === 0) {return [0, 1, 0]} else {if (y < 0) {return [x[0]+y, x[1]+y, diff(x[2], x[0])]} else {return [x[0] + y, x[1] + y, sum(x[2], x[1])]}}}).map(function(p) {return p}).scan(0, function(x, y) {return y[2]/y[1]});;
 
 theCounts5.assign($('#theCounts5'), 'text');
+
+
+// rolling variance on integers
+var sqNext = $('#sqNext').asEventStream('click');
+var sqPrev = $('#sqPrev').asEventStream('click');
+var reset = $('#resetSq').asEventStream('click');
+
+function square(x) {
+    return x*x
+}
+
+var theCounts6 = sqNext.map(1).merge(reset.map(0)).merge(sqPrev.map(-1)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}}).map(function(p) {return p}).scan(0, function(x, y) {return square(y)});
+
+theCounts6.assign($('#theCounts6'), 'text');
+
+
+// rolling variance on integers
+var rollNext = $('#rollNext_v').asEventStream('click');
+var rollPrev = $('#rollPrev_v').asEventStream('click');
+var reset = $('#resetRoll_v').asEventStream('click');
+
+var theCounts7 = rollNext.map(1).merge(reset.map(0)).merge(rollPrev.map(-1)).scan([0, 1, 0], function(x,y) {if (y === 0) {return [0, 1, 0]} else {if (y < 0) {return [x[0]+y, x[1]+y, diff(x[2], x[0])]} else {return [x[0] + y, x[1] + y, sum(x[2], x[1])]}}}).map(function(p) {return p}).scan(0, function(x, y) {return y[2]/y[1]});;
+
+theCounts7.assign($('#theCounts7'), 'text');
+
