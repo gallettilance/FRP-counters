@@ -58,7 +58,7 @@ var incr3 = foldNext.map(1).merge(reset.map(0)).merge(foldPrev.map(-1)).scan([0,
 
 // higher order function - takes an initial value and a function and applies a foldleft on the integer stream
 function myfunc(init, f, inv) {
-    return incr3.map(function(p) {return p}).scan(init, function(x, y) {if ( y[1] === 0 ) {return init} else {if (y[0] > y[1]) { return inv(x, y[1]) } else {return f(x, y[1]) }}})
+    return incr3.map(function(p) {return p}).scan(init, function(x, y) {if ( y[0] === 0 ) {return init} else {if (y[0] >= y[1]) {return inv(x, y[1])} else {return f(x, y[0])}}})
 }
 
 var theCounts_sum = myfunc(0, sum, diff)
