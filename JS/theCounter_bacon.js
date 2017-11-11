@@ -127,4 +127,24 @@ var theCounts_sumInvSq = myfunc2(s1, s2, 1, sumInvSq, sumInvSqInv);
 theCounts_sumSq.assign($('#theCounts_sumSq'), 'text');
 theCounts_sumInvSq.assign($('#theCounts_sumInvSq'), 'text');
 
+// theNatsPairs counter
+var pairNext = $('#pairsNext').asEventStream('click');
+var pairPrev = $('#pairsPrev').asEventStream('click');
+var reset = $('#resetPairs').asEventStream('click');
 
+function aux(n, i) {
+    if (i <= n) {
+	return "( " + [i, n-i] + " )" + ", " + aux(n, i+1)
+    } else {
+	return []
+    }
+}
+
+function diag(n) {
+    return aux(n, 0)
+}
+
+var next = pairNext.map(1).merge(pairPrev.map(-1)).merge(reset.map(0)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
+var theCounts_pairs = next.map(function(x) {return "( " + diag(x).toString().slice(0, -2) + " )"});
+
+theCounts_pairs.assign($('#theCounts_pairs'), 'text');
