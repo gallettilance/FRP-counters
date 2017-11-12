@@ -148,3 +148,30 @@ var next = pairNext.map(1).merge(pairPrev.map(-1)).merge(reset.map(0)).scan(0, f
 var theCounts_pairs = next.map(function(x) {return "( " + diag(x).toString().slice(0, -2) + " )"});
 
 theCounts_pairs.assign($('#theCounts_pairs'), 'text');
+
+
+// theNatsTriples counter
+var tripleNext = $('#triplesNext').asEventStream('click');
+var triplePrev = $('#triplesPrev').asEventStream('click');
+var reset = $('#resetTriples').asEventStream('click');
+
+function aux(n, i, j) {
+    if (i+j < n) {
+	return "( " + [i, j, n-(i+j)] + " )" + ", " + aux(n, i+1, j)
+    } else {
+	if (j <= n) {
+	    return "( " + [i, j, n-(i+j)] + " )" + ", " + aux(n, 0, j+1)
+	} else {
+	    return []
+	}
+    }
+}
+
+function triang(n) {
+    return aux(n, 0, 0)
+}
+
+var next = tripleNext.map(1).merge(triplePrev.map(-1)).merge(reset.map(0)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
+var theCounts_triples = next.map(function(x) {return "( " + triang(x).toString().slice(0, -2) + " )"});
+
+theCounts_triples.assign($('#theCounts_triples'), 'text');
