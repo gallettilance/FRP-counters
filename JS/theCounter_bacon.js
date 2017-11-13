@@ -207,7 +207,6 @@ var theCounts_quads = next.map(function(x) {return "( " + triang(x).toString().s
 
 theCounts_quads.assign($('#theCounts_quads'), 'text');
 
-
 // triangular numbers
 var triangularNext = $('#triangularNext').asEventStream('click');
 var triangularPrev = $('#triangularPrev').asEventStream('click');
@@ -218,3 +217,22 @@ var s = triangularNext.map(1).merge(reset.map(0)).merge(triangularPrev.map(-1)).
 var theCounts_triangular = myfunc(s, 0, sum, diff);
 
 theCounts_triangular.assign($('#theCounts_triangular'), 'text');
+
+// pentagonal numbers
+var pentagonalNext = $('#pentagonalNext').asEventStream('click');
+var pentagonalPrev = $('#pentagonalPrev').asEventStream('click');
+var reset = $('#resetPentagonal').asEventStream('click');
+
+function cube(n) {
+    return n*n*n
+}
+
+function pentag(n) {
+    return (3*cube(n) - n)/2
+}
+
+var s = pentagonalNext.map(1).merge(reset.map(0)).merge(pentagonalPrev.map(-1)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
+
+var theCounts_pentagonal = s.map(function(y) {return pentag(y)});
+
+theCounts_pentagonal.assign($('#theCounts_pentagonal'), 'text');
