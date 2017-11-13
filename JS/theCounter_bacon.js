@@ -253,10 +253,23 @@ var r = $('#rightWorm').asEventStream('click').map([1, 0]);
 var reset = $('#resetWorm').asEventStream('click').map([0, 0]);
 
 function inc(x, y) {
-	ctx.clearRect(0, 0, 200, 200);
-	ctx.fillRect(x, y, 10, 10);
+    if (x < 0) {
+	x = width + x
+    }
+    if (y < 0) {
+	y = height + y
+    }
+    ctx.clearRect(0, 0, 200, 200);
+    ctx.fillRect(x, y, 10, 10);
 }
 
 var theWormPos = u.merge(d).merge(l).merge(r).merge(reset).scan([0, 0], function(x, y) {if (y[0] !== y[1]) {return [(x[0] + 10*y[0])%width, (x[1] + 10*y[1])%height]} else {return [0,0]}}).map(function(x) {return inc(x[0], x[1])});
 
 theWormPos.assign($('#theCanvas'), 'text');
+
+
+/*
+
+need to add auto button and some prizes to make worm grow
+
+*/
