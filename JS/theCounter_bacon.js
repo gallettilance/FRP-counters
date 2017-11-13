@@ -132,16 +132,16 @@ var pairNext = $('#pairsNext').asEventStream('click');
 var pairPrev = $('#pairsPrev').asEventStream('click');
 var reset = $('#resetPairs').asEventStream('click');
 
-function aux(n, i) {
+function aux1(n, i) {
     if (i <= n) {
-	return "( " + [i, n-i] + " )" + ", " + aux(n, i+1)
+	return "( " + [i, n-i] + " )" + ", " + aux1(n, i+1)
     } else {
 	return []
     }
 }
 
 function diag(n) {
-    return aux(n, 0)
+    return aux1(n, 0)
 }
 
 var next = pairNext.map(1).merge(pairPrev.map(-1)).merge(reset.map(0)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
@@ -155,12 +155,12 @@ var tripleNext = $('#triplesNext').asEventStream('click');
 var triplePrev = $('#triplesPrev').asEventStream('click');
 var reset = $('#resetTriples').asEventStream('click');
 
-function aux(n, i, j) {
+function aux2(n, i, j) {
     if (i+j < n) {
-	return "( " + [i, j, n-(i+j)] + " )" + ", " + aux(n, i+1, j)
+	return "( " + [i, j, n-(i+j)] + " )" + ", " + aux2(n, i+1, j)
     } else {
 	if (j <= n) {
-	    return "( " + [i, j, n-(i+j)] + " )" + ", " + aux(n, 0, j+1)
+	    return "( " + [i, j, n-(i+j)] + " )" + ", " + aux2(n, 0, j+1)
 	} else {
 	    return []
 	}
@@ -168,10 +168,53 @@ function aux(n, i, j) {
 }
 
 function triang(n) {
-    return aux(n, 0, 0)
+    return aux2(n, 0, 0)
 }
 
 var next = tripleNext.map(1).merge(triplePrev.map(-1)).merge(reset.map(0)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
 var theCounts_triples = next.map(function(x) {return "( " + triang(x).toString().slice(0, -2) + " )"});
 
 theCounts_triples.assign($('#theCounts_triples'), 'text');
+
+
+// theNatsQuads counter
+var quadNext = $('#quadsNext').asEventStream('click');
+var quadPrev = $('#quadsPrev').asEventStream('click');
+var reset = $('#resetQuads').asEventStream('click');
+
+function aux3(n, i, j, k) {
+    if (i+j+k < n) {
+	return "( " + [i, j, k, n-(i+j+k)] + " )" + ", " + aux3(n, i+1, j, k)
+    } else {
+	if (j+k < n) {
+	    return "( " + [i, j, k, n-(i+j+k)] + " )" + ", " + aux3(n, 0, j+1, k)
+	} else {
+	    if (k <= n) {
+		return "( " + [i, j, k, n-(i+j+k)] + " )" + ", " + aux3(n, 0, 0, k+1)]
+	    } else {
+	        return []
+	    }
+        }
+    }
+}
+
+function cubes(n) {
+    return aux3(n, 0, 0)
+}
+
+var next = quadNext.map(1).merge(quadPrev.map(-1)).merge(reset.map(0)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
+var theCounts_quads = next.map(function(x) {return "( " + triang(x).toString().slice(0, -2) + " )"});
+
+theCounts_quads.assign($('#theCounts_quads'), 'text');
+
+
+// triangular numbers
+var triangularNext = $('#triangularNext').asEventStream('click');
+var triangularPrev = $('#triangularPrev').asEventStream('click');
+var reset = $('#resetTriangular').asEventStream('click');
+
+var s = triangularNext.map(1).merge(reset.map(0)).merge(triangularPrev.map(-1)).scan([0, 1], function(x,y) {if (y === 0) {return [0, 1]} else {return [x[1], x[1] + y]}});
+
+var theCounts_triangular = myfunc(s, 0, sum, diff);
+
+theCounts_triangular.assign($('#theCounts_triangular'), 'text');
