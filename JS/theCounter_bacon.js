@@ -176,7 +176,7 @@ var theCounts_triples = next.map(function(x) {return "( " + triang(x).toString()
 
 theCounts_triples.assign($('#theCounts_triples'), 'text');
 
-
+/*
 // theNatsQuads counter
 var quadNext = $('#quadsNext').asEventStream('click');
 var quadPrev = $('#quadsPrev').asEventStream('click');
@@ -203,7 +203,7 @@ function cubes(n) {
 }
 
 var next = quadNext.map(1).merge(quadPrev.map(-1)).merge(reset.map(0)).scan(0, function(x,y) {if (y === 0) {return 0} else {return x + y}});
-var theCounts_quads = next.map(function(x) {return "( " + triang(x).toString().slice(0, -2) + " )"});
+var theCounts_quads = next.map(function(x) {return "( " + cubes(x).toString().slice(0, -2) + " )"});
 
 theCounts_quads.assign($('#theCounts_quads'), 'text');
 
@@ -236,3 +236,27 @@ var s = pentagonalNext.map(1).merge(reset.map(0)).merge(pentagonalPrev.map(-1)).
 var theCounts_pentagonal = s.map(function(y) {return pentag(y)});
 
 theCounts_pentagonal.assign($('#theCounts_pentagonal'), 'text');
+*/
+
+var canvas = document.getElementById("theCanvas");
+var ctx = canvas.getContext("2d");
+ctx.fillStyle = "#123456";
+ctx.fillRect(0, 0, 10, 10)
+
+var width = 200;
+var height = 200;
+
+var u = $('#upWorm').asEventStream('click').map([0, -1]);
+var d = $('#downWorm').asEventStream('click').map([0, 1]);
+var l = $('#leftWorm').asEventStream('click').map([-1, 0]);
+var r = $('#rightWorm').asEventStream('click').map([1, 0]);
+var reset = $('#resetWorm').asEventStream('click').map([0, 0]);
+
+function inc(x, y) {
+	ctx.clearRect(0, 0, 200, 200);
+	ctx.fillRect(x, y, 10, 10);
+}
+
+var theWormPos = u.merge(d).merge(l).merge(r).merge(reset).scan([0, 0], function(x, y) {if (y[0] !== y[1]) {return [(x[0] + 10*y[0])%width, (x[1] + 10*y[1])%height]} else {return [0,0]}}).map(function(x) {return inc(x[0], x[1])});
+
+theWormPos.assign($('#theCanvas'), 'text');
