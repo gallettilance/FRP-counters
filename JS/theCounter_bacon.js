@@ -238,6 +238,7 @@ var theCounts_pentagonal = s.map(function(y) {return pentag(y)});
 theCounts_pentagonal.assign($('#theCounts_pentagonal'), 'text');
 */
 
+
 var canvas = document.getElementById("theCanvas");
 var ctx = canvas.getContext("2d");
 ctx.fillStyle = "#123456";
@@ -273,3 +274,50 @@ theWormPos.assign($('#theCanvas'), 'text');
 need to add auto button and some prizes to make worm grow
 
 */
+
+
+function *naturalNumbers() {
+
+    function *_naturalNumbers(n) {
+	yield n;
+	yield *_naturalNumbers(n + 1);
+    }
+
+    yield *_naturalNumbers(2);
+}
+
+
+function* filter(fn, st) {
+    var n = st.next().value;
+    
+    while (!fn( n )) {
+	var n = st.next().value;
+    }
+    yield n;
+    yield* filter(fn, st);
+}
+
+function *sieve (theNats) {
+
+    function *_sieve(Nats) {
+	let n = Nats.next();
+	yield n.value;
+	yield* _sieve(filter(x => x%n.value !== 0, Nats));
+    }
+    
+    yield *_sieve(theNats);
+}
+
+const N = naturalNumbers();
+
+const primes = sieve(N);
+
+function help(Nat) {
+    return Nat.next().value;
+}
+
+var nextp = $('#nextPrime').asEventStream('click').map(1);
+
+var thePrimes = nextp.scan(0, function(x, y) {return help(primes)});
+
+thePrimes.assign($('#thePrimes'), 'text');
