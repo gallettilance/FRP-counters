@@ -321,3 +321,53 @@ var nextp = $('#nextPrime').asEventStream('click').map(1);
 var thePrimes = nextp.scan(0, function(x, y) {return help(primes)});
 
 thePrimes.assign($('#thePrimes'), 'text');
+
+
+
+//permutations
+
+function swap(xs, i, j) {
+    temp = xs[j];
+    xs[j] = xs[i];
+    xs[i] = temp;
+    return xs;
+}
+
+function permutate(xs, p1, p2) {
+    if (xs[p1 -1] < xs[p2]) {
+	permutate(xs, p1, p2 -1)
+    } else {
+	var xss = swap(xs, p1, p2);
+	alert([xss.slice(0, p1-1) + xss.slice(p1-1,).reverse()]);
+	return [xss.slice(0, p1-1) + ',' + xss.slice(p1-1,).reverse()];
+    }
+}
+
+function pivot(xs) {
+    var n = xs.length - 1
+    for (i=0; i <= n; i++) {
+	if (i === n) {
+	    return i
+	} else {
+	    if (xs[n-i] > xs[n-i-1]) {
+		return n-i
+	    }
+	}
+    
+    }
+}
+
+function nextPermutation(xs) {
+    var piv = pivot(xs);
+    return permutate(xs, piv, xs.length - 1);
+}
+
+
+
+function reset_action() {
+    var intmax = parseInt(document.getElementById("intmax").value);
+    var nextPerm = $('#nextPerm').asEventStream('click').map(1);
+    var myArray = Array.apply(null, Array(intmax)).map(function (_, i) {return i;});
+    var thePerms = nextPerm.scan(myArray, function(x, y) {return nextPermutation(x)});
+    thePerms.assign($('#thePerms'), 'text');
+}
