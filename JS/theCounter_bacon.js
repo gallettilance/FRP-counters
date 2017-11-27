@@ -327,24 +327,25 @@ thePrimes.assign($('#thePrimes'), 'text');
 //permutations
 
 function swap(xs, i, j) {
-    temp = xs[j];
-    xs[j] = xs[i];
-    xs[i] = temp;
-    return xs;
+    var ys = xs.slice();
+    var temp = ys[j];
+    ys[j] = ys[i];
+    ys[i] = temp;
+    return ys;
 }
 
+
 function permutate(xs, p1, p2) {
-    if (xs[p1 -1] < xs[p2]) {
-	permutate(xs, p1, p2 -1)
+    if (p1 < p2 && xs[p1-1] > xs[p2]) {
+	return permutate(xs, p1, p2 -1)
     } else {
-	var xss = swap(xs, p1, p2);
-	alert([xss.slice(0, p1-1) + xss.slice(p1-1,).reverse()]);
-	return [xss.slice(0, p1-1) + ',' + xss.slice(p1-1,).reverse()];
+	var xss = swap(xs, p1-1, p2);
+	return xss.slice(0, p1).concat(xss.slice(p1,).reverse());
     }
 }
 
 function pivot(xs) {
-    var n = xs.length - 1
+    var n = xs.length - 1;
     for (i=0; i <= n; i++) {
 	if (i === n) {
 	    return i
@@ -353,21 +354,38 @@ function pivot(xs) {
 		return n-i
 	    }
 	}
-    
     }
 }
 
-function nextPermutation(xs) {
-    var piv = pivot(xs);
-    return permutate(xs, piv, xs.length - 1);
+function fact(n) {
+    
+    function aux(n, res) {
+	if (n <= 1) {
+	    return res
+	} else {
+	    return aux(n-1, res*n)
+	}
+    }
+
+    return aux(n, 1);
+
 }
 
-
+function nextPermutation(xs, i) {
+    if (i === 0) {
+	return xs
+    }
+    var piv = pivot(xs);
+    return nextPermutation(permutate(xs, piv, xs.length - 1), i-1);
+}
 
 function reset_action() {
     var intmax = parseInt(document.getElementById("intmax").value);
-    var nextPerm = $('#nextPerm').asEventStream('click').map(1);
-    var myArray = Array.apply(null, Array(intmax)).map(function (_, i) {return i;});
-    var thePerms = nextPerm.scan(myArray, function(x, y) {return nextPermutation(x)});
+    var resetbtn = $('#set').asEventStream('click').map(0);
+    var nextPerm = $('#nextPerm').asEventStream('click').map(1).merge(resetbtn).scan(0, function(x, y) {if (y === 0) { return 0 } else { return x+y }});
+    var myArray = Array.apply(null, Array(intmax)).map(function (_, i) {return i});
+    var thePerms = nextPerm.map(function(x) { return nextPermutation(myArray, x).toString() });
     thePerms.assign($('#thePerms'), 'text');
 }
+
+reset_action();
