@@ -1,5 +1,5 @@
 # Fun FRP counters
 
-Getting some Functional Reactive Programming practice by building some counters/animations of lazy versions of math/stats functions
+Getting some Functional Reactive Programming practice by building some counters/buttons in a memoized and lazy style
 
 http://gallettilance.org/FRP/FRP-Practice.html
